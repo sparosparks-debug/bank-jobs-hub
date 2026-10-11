@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Successfully - {{ reg['registration_ref'] }} | Bank Jobs Hub{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 2.5rem 1.5rem; max-width: 900px;">
+    
+    <!-- Official Success Certificate Wrapper -->
+    <div class="receipt-wrapper" style="border: 2px solid var(--accent-gold); box-shadow: var(--shadow-xl); padding: 3rem 2.5rem; background: #ffffff;">
+        
+        <!-- Header with Emblem & Seal -->
+        <div class="receipt-header" style="border-bottom: 2px solid var(--accent-gold); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="emblem-icon" style="width: 54px; height: 54px; font-size: 1.6rem;">🏛️</div>
+                <div>
+                    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-navy); margin: 0; line-height: 1.2;">
+                        Bank Jobs Hub
+                    </h2>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
+                        National Public & Private Banking Recruitment Council
+                    </span>
+                </div>
+            </div>
+            <div class="receipt-ref-stamp" style="text-align: right; border-color: var(--accent-gold); background: #fef9e7;">
+                <span style="color: #92400e;">Registration Reference Number</span>
+                <strong style="color: var(--primary-navy); font-size: 1.2rem; font-family: monospace;">{{ reg['registration_ref'] }}</strong>
+            </div>
+        </div>
+
+        <!-- Big Banner: Registered Successfully -->
+        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%); border: 2px solid #10b981; border-radius: 12px; padding: 1.75rem; margin-bottom: 2.25rem; display: flex; align-items: center; gap: 1.5rem;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: #10b981; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                ✓
+            </div>
+            <div>
+                <span style="background: #10b981; color: #fff; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px;">Official Confirmation</span>
+                <h3 style="color: #065f46; font-size: 1.4rem; font-weight: 800; margin: 0.25rem 0;">
+                    Registered Successfully to Participating Banks!
+                </h3>
+                <p style="color: #047857; font-size: 0.92rem; margin: 0;">
+                    Your candidate dossier has been verified and registered across all selected institutions. Your applications are now active under status <strong style="color: #065f46;">"Submitted / Active"</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Registered Institutions Breakdown -->
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+                Participating Banking Institutions Enrolled
+            </h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.75rem;">
+                {% for bank in reg['selected_banks'].split(', ') %}
+                <span style="background: #f8fafc; border: 1px solid var(--border-color); padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700; color: var(--primary-navy); display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <span style="color: #10b981;">✓</span> {{ bank }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Selected Cadres -->
+        <div style="margin-bottom: 2rem; background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Enrolled Job Cadres:</span>
+            <strong style="color: var(--primary-navy); font-size: 0.95rem;">{{ reg['selected_categories'] }}</strong>
+        </div>
+
+        <!-- Candidate Profile Snapshot -->
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+            Applicant Profile Summary
+        </h3>
+        <div class="receipt-grid">
+            <div class="receipt-field">
+                <label>Candidate Full Name</label>
+                <p>{{ reg['candidate_name'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Registered Email</label>
+                <p>{{ reg['candidate_email'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Mobile Number</label>
+                <p>{{ reg['candidate_mobile'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Registration Date & Time</label>
+                <p>{{ reg['registration_date'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Academic Qualification</label>
+                <p>{{ reg['qualification'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Graduation Year & Score</label>
+                <p>Class of {{ reg['graduation_year'] }} • {{ reg['percentage_cgpa'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Experience Claimed</label>
+                <p>{{ reg['experience_level'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Current Enrolment Status</label>
+                <p><span class="status-pill Selected">{{ reg['status'] }}</span></p>
+            </div>
+        </div>
+
+        {% if reg['skills'] %}
+        <div style="margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Skills Registered:</span>
+            <p style="color: var(--text-primary); font-weight: 600;">{{ reg['skills'] }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Security & Legal Notice -->
+        <div style="background: #f1f5f9; border-radius: 6px; padding: 1rem; font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: 1.5rem;">
+            This is an authentic system-generated digital acknowledgement slip under the National Banking Career Framework. Please retain your reference number <strong>{{ reg['registration_ref'] }}</strong> for all examination and interview scheduling queries.
+        </div>
+
+        <!-- Action Buttons (Hidden on Print) -->
+        <div class="no-print" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2.5rem;">
+            <button onclick="window.print()" class="btn btn-outline btn-lg" style="gap: 0.5rem; font-weight: 700;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Registration Slip
+            </button>
+            <a href="{{ url_for('candidate_dashboard') }}" class="btn btn-primary btn-lg" style="gap: 0.5rem;">
+                Go to Candidate Dashboard &rarr;
+            </a>
+            <a href="{{ url_for('job_listings') }}" class="btn btn-gold btn-lg">
+                View All Vacancies
+            </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

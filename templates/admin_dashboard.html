@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrator Dashboard | Govt & Private Bank Jobs Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    
+    <!-- Admin Top Banner -->
+    <div class="dash-header-banner" style="background: linear-gradient(135deg, #071120 0%, #0d2240 100%);">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span class="notice-badge" style="background: var(--accent-gold); color: #071120;">SuperAdmin Portal</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Logged in as: {{ current_admin['username'] }}</span>
+            </div>
+            <h2>Banking Recruitment Command Center</h2>
+            <p>Manage government & private bank job openings, review candidate resumes, and schedule interviews.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{{ url_for('admin_jobs') }}" class="btn btn-gold">
+                + Manage Vacancies
+            </a>
+            <a href="{{ url_for('admin_reports') }}" class="btn btn-outline" style="color: #fff; border-color: rgba(255,255,255,0.3);">
+                📊 Recruitment Reports
+            </a>
+        </div>
+    </div>
+
+    <!-- Administrative Quick Navigation Pills -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-sm">Overview Dashboard</a>
+        <a href="{{ url_for('admin_jobs') }}" class="btn btn-outline btn-sm">Job Vacancies Directory ({{ stats.total_jobs }})</a>
+        <a href="{{ url_for('admin_applications') }}" class="btn btn-outline btn-sm">Candidate Applications ({{ stats.total_applications }})</a>
+        <a href="{{ url_for('admin_reports') }}" class="btn btn-outline btn-sm">Analytics & Export CSV</a>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="stat-cards-grid">
+        <div class="stat-card">
+            <div class="stat-icon primary">🏛️</div>
+            <div class="stat-info">
+                <h3>{{ stats.total_jobs }}</h3>
+                <span>Total Vacancies ({{ stats.govt_jobs }} Govt / {{ stats.private_jobs }} Pvt)</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon warning">📝</div>
+            <div class="stat-info">
+                <h3>{{ stats.total_applications }}</h3>
+                <span>Total Applications Submitted</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon primary">👥</div>
+            <div class="stat-info">
+                <h3>{{ stats.total_candidates }}</h3>
+                <span>Unique Registered Members</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">🎯</div>
+            <div class="stat-info">
+                <h3>{{ stats.shortlisted_count }}</h3>
+                <span>Candidates Shortlisted</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon cyan">📅</div>
+            <div class="stat-info">
+                <h3>{{ stats.interview_count }}</h3>
+                <span>Interviews Scheduled</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon success">🏆</div>
+            <div class="stat-info">
+                <h3>{{ stats.selected_count }}</h3>
+                <span>Final Selections</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applicants Count Breakdown Per Job -->
+    <div class="table-card" style="margin-bottom: 2rem;">
+        <div class="table-card-header">
+            <h3>📊 Number of Members Applied Per Banking Vacancy</h3>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Real-time database count</span>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Banking Institution</th>
+                        <th>Role / Designation</th>
+                        <th>Cadre Category</th>
+                        <th>Members Applied</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for js in job_stats %}
+                    <tr>
+                        <td style="font-weight: bold; color: var(--text-muted);">#{{ js['job_id'] }}</td>
+                        <td>
+                            <strong>{{ js['bank_name'] }}</strong>
+                            <div>
+                                <span class="bank-type-badge {{ 'govt' if js['bank_type'] == 'Government' else 'private' }}" style="font-size: 0.68rem;">
+                                    {{ js['bank_type'] }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="color: var(--primary-navy);">{{ js['job_title'] }}</strong>
+                        </td>
+                        <td>{{ js['category'] }}</td>
+                        <td>
+                            <span class="status-pill {% if js['applicant_count'] > 0 %}Submitted{% else %}Withdrawn{% endif %}" style="font-size: 0.85rem; font-weight: 800;">
+                                👥 {{ js['applicant_count'] }} Member{{ 's' if js['applicant_count'] != 1 else '' }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_applications', job_id=js['job_id']) }}" class="btn btn-outline btn-sm">
+                                View Applicants &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Candidate Applications Table -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3>Recent Candidate Submissions</h3>
+            <a href="{{ url_for('admin_applications') }}" class="btn btn-outline btn-sm">
+                View All Applications &rarr;
+            </a>
+        </div>
+
+        {% if recent_applications %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Applicant</th>
+                        <th>Bank & Position</th>
+                        <th>Qualification & Exp</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in recent_applications %}
+                    <tr>
+                        <td>
+                            <strong style="font-family: monospace; color: var(--primary-navy);">
+                                {{ app['application_ref'] }}
+                            </strong>
+                        </td>
+                        <td>
+                            <strong>{{ app['candidate_name'] }}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">{{ app['candidate_email'] }} • {{ app['candidate_mobile'] }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: var(--primary-navy);">{{ app['job_title'] }}</div>
+                            <span class="bank-type-badge {{ 'govt' if app['bank_type'] == 'Government' else 'private' }}" style="font-size: 0.68rem;">
+                                {{ app['bank_name'] }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem;">{{ app['qualification'] }}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">{{ app['experience_years'] }}</div>
+                        </td>
+                        <td style="font-size: 0.82rem; color: var(--text-secondary);">
+                            {{ app['application_date'] }}
+                        </td>
+                        <td>
+                            <span class="status-pill {{ app['application_status'] }}">
+                                {{ app['application_status'] }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_application_detail', app_id=app['application_id']) }}" class="btn btn-outline btn-sm">
+                                Review & Action &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
+            No candidate applications registered yet.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

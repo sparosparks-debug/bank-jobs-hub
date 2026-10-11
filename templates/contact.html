@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Candidate Desk | Govt & Private Bank Jobs{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--primary-navy) 100%); color: #ffffff; padding: 3rem 1.5rem 3.5rem; border-bottom: 2px solid var(--accent-gold);">
+    <div class="container">
+        <span class="section-tag" style="color: var(--accent-gold);">Applicant Support</span>
+        <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+            Candidate Help Desk & Inquiries
+        </h1>
+        <p style="color: #cbd5e1; font-size: 1.05rem; max-width: 750px;">
+            Have questions regarding banking vacancy eligibility, document uploads, or application reference tracking? Our team is here to assist.
+        </p>
+    </div>
+</div>
+
+<div class="container" style="margin-top: -1.5rem; margin-bottom: 4rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 2rem; align-items: start;">
+        
+        <!-- Contact Details Card -->
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 2rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 1.5rem;">
+                Support Headquarters
+            </h3>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.92rem;">
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div style="width: 40px; height: 40px; border-radius: 8px; background: #eff6ff; color: #1d4ed8; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem;">
+                        📍
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-navy); display: block;">National Banking Recruitment Complex</strong>
+                        <p style="color: var(--text-secondary); margin-top: 0.2rem;">
+                            Bandra Kurla Complex (BKC), G Block, Bandra East, Mumbai, Maharashtra - 400051
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div style="width: 40px; height: 40px; border-radius: 8px; background: #ecfdf5; color: #047857; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem;">
+                        📞
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-navy); display: block;">Toll-Free Recruitment Helpline</strong>
+                        <p style="color: var(--text-secondary); margin-top: 0.2rem;">
+                            1800-202-BANK (1800-202-2265)<br>
+                            Operating Hours: Monday – Saturday (9:30 AM – 6:00 PM)
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div style="width: 40px; height: 40px; border-radius: 8px; background: #fef9e7; color: #b45309; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem;">
+                        ✉️
+                    </div>
+                    <div>
+                        <strong style="color: var(--primary-navy); display: block;">Electronic Support Inquiries</strong>
+                        <p style="color: var(--text-secondary); margin-top: 0.2rem;">
+                            candidatesupport@apexbankportal.gov.in
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Desk Inquiry Form -->
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 2rem;">
+            <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">
+                Submit an Inquiry Ticket
+            </h3>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem;">
+                Our help desk will reply within 1 business day.
+            </p>
+
+            <form action="{{ url_for('contact') }}" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Your Full Name <span class="req">*</span></label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ current_user['full_name'] if current_user else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Contact Email <span class="req">*</span></label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ current_user['email'] if current_user else '' }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="subject">Inquiry Subject / Application Ref <span class="req">*</span></label>
+                    <input type="text" id="subject" name="subject" class="form-control" placeholder="e.g. Query regarding Reference BNK-2026-XXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="message">Detailed Message / Question <span class="req">*</span></label>
+                    <textarea id="message" name="message" class="form-control" rows="4" placeholder="Describe your question or issue in detail..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-gold btn-lg" style="width: 100%;">
+                    Transmit Inquiry &rarr;
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

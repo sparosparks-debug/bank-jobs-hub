@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Applications | Admin Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <a href="{{ url_for('admin_dashboard') }}" style="color: var(--text-muted); font-size: 0.88rem;">&larr; Admin Dashboard</a>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary-navy); margin-top: 0.25rem;">
+                Candidate Recruitment Applications
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                Review candidate credentials, inspect uploaded PDF resumes, update review statuses, and schedule interview calls.
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_export_csv') }}" class="btn btn-outline" style="gap: 0.5rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export All Applications (CSV)
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 1.5rem; margin-bottom: 2rem;">
+        <form method="GET" action="{{ url_for('admin_applications') }}">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
+                
+                <div>
+                    <label class="form-label">Search Candidate / Ref</label>
+                    <input type="text" name="keyword" class="form-control" value="{{ filters.keyword }}" placeholder="Name, email or ref #">
+                </div>
+
+                <div>
+                    <label class="form-label">Filter by Status</label>
+                    <select name="status" class="form-control">
+                        <option value="All" {% if filters.status == 'All' %}selected{% endif %}>All Application Statuses</option>
+                        <option value="Submitted" {% if filters.status == 'Submitted' %}selected{% endif %}>Submitted</option>
+                        <option value="Under Review" {% if filters.status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                        <option value="Shortlisted" {% if filters.status == 'Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                        <option value="Interview Scheduled" {% if filters.status == 'Interview Scheduled' %}selected{% endif %}>Interview Scheduled</option>
+                        <option value="Selected" {% if filters.status == 'Selected' %}selected{% endif %}>Selected</option>
+                        <option value="Rejected" {% if filters.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">Filter by Job Vacancy</label>
+                    <select name="job_id" class="form-control">
+                        <option value="All">All Jobs</option>
+                        {% for j in jobs %}
+                        <option value="{{ j['job_id'] }}" {% if filters.job_id|string == j['job_id']|string %}selected{% endif %}>
+                            #{{ j['job_id'] }} - {{ j['job_title'] }} ({{ j['bank_name'] }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Filter Submissions</button>
+                    <a href="{{ url_for('admin_applications') }}" class="btn btn-outline">Reset</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- Applications Table -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3>Registered Candidate Applications ({{ applications|length }})</h3>
+        </div>
+
+        {% if applications %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Ref Number</th>
+                        <th>Candidate Name & Contact</th>
+                        <th>Applied Vacancy</th>
+                        <th>Academic Record</th>
+                        <th>Resume</th>
+                        <th>Submission Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>
+                            <strong style="font-family: monospace; color: var(--primary-navy); font-size: 0.95rem;">
+                                {{ app['application_ref'] }}
+                            </strong>
+                        </td>
+                        <td>
+                            <strong>{{ app['candidate_name'] }}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                {{ app['candidate_email'] }}<br>
+                                {{ app['candidate_mobile'] }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: var(--primary-navy);">{{ app['job_title'] }}</div>
+                            <span class="bank-type-badge {{ 'govt' if app['bank_type'] == 'Government' else 'private' }}" style="font-size: 0.68rem;">
+                                {{ app['bank_name'] }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem; font-weight: 600;">{{ app['qualification'] }}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-secondary);">
+                                {{ app['percentage_cgpa'] }} • {{ app['experience_years'] }}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="/{{ app['resume_path'] }}" target="_blank" class="btn btn-sm btn-outline" style="gap: 0.35rem; font-size: 0.78rem;" title="View uploaded PDF resume">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                PDF
+                            </a>
+                        </td>
+                        <td style="font-size: 0.82rem; color: var(--text-secondary);">
+                            {{ app['application_date'] }}
+                        </td>
+                        <td>
+                            <span class="status-pill {{ app['application_status'] }}">
+                                {{ app['application_status'] }}
+                            </span>
+                            {% if app['interview_date'] %}
+                                <div style="font-size: 0.72rem; color: #0e7490; font-weight: 700; margin-top: 2px;">
+                                    📅 {{ app['interview_date'] }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_application_detail', app_id=app['application_id']) }}" class="btn btn-primary btn-sm">
+                                Review & Action &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 4rem 1.5rem; color: var(--text-muted);">
+            No candidate applications match the selected filter criteria.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

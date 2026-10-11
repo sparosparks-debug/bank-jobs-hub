@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Dashboard | Govt & Private Bank Jobs{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-layout">
+        
+        <!-- Left: Profile Sidebar -->
+        <aside>
+            <div class="profile-card">
+                <div class="profile-avatar-circle">
+                    {{ user['full_name'][0].upper() }}
+                </div>
+                <h3 class="profile-name">{{ user['full_name'] }}</h3>
+                <p class="profile-email">{{ user['email'] }}</p>
+
+                <ul class="profile-details-list">
+                    <li>
+                        <span>Mobile:</span>
+                        <strong>{{ user['mobile'] }}</strong>
+                    </li>
+                    <li>
+                        <span>Qualification:</span>
+                        <strong>{{ user['qualification'].split('(')[0] }}</strong>
+                    </li>
+                    <li>
+                        <span>Graduation Year:</span>
+                        <strong>{{ user['graduation_year'] }}</strong>
+                    </li>
+                    {% if user['date_of_birth'] %}
+                    <li>
+                        <span>Date of Birth:</span>
+                        <strong>{{ user['date_of_birth'] }}</strong>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <nav class="dash-nav">
+                    <button type="button" class="dash-nav-btn active" onclick="switchDashTab('applicationsTab', this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Applied Jobs ({{ applications|length }})
+                    </button>
+                    <button type="button" class="dash-nav-btn" onclick="switchDashTab('savedJobsTab', this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                        Saved Vacancies ({{ saved_jobs|length }})
+                    </button>
+                    <button type="button" class="dash-nav-btn" onclick="switchDashTab('editProfileTab', this)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        Edit Profile
+                    </button>
+                    <a href="{{ url_for('job_listings') }}" class="dash-nav-btn" style="color: var(--accent-gold);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        Browse All Vacancies
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Right: Dashboard Tab Panes -->
+        <main class="dash-content-area">
+            
+            <!-- Banner Header -->
+            <div class="dash-header-banner">
+                <div>
+                    <h2>Welcome, {{ user['full_name'] }}</h2>
+                    <p>Track your submitted applications, verify interview calls, and review application receipts.</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('job_listings') }}" class="btn btn-gold">
+                        + Apply for New Job
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Metrics Grid -->
+            <div class="stat-cards-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">📁</div>
+                    <div class="stat-info">
+                        <h3>{{ status_counts.Total }}</h3>
+                        <span>Total Applied</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning">⏳</div>
+                    <div class="stat-info">
+                        <h3>{{ status_counts['Under Review'] + status_counts['Submitted'] }}</h3>
+                        <span>In Review</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon cyan">📅</div>
+                    <div class="stat-info">
+                        <h3>{{ status_counts['Interview Scheduled'] }}</h3>
+                        <span>Interviews</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">🎉</div>
+                    <div class="stat-info">
+                        <h3>{{ status_counts.Selected }}</h3>
+                        <span>Selections</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: SUBMITTED APPLICATIONS & STATUS TRACKER -->
+            <div id="applicationsTab" class="tab-pane active">
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>My Submitted Applications & Real-time Tracker</h3>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">{{ applications|length }} Applications</span>
+                    </div>
+
+                    {% if applications %}
+                        {% for app in applications %}
+                        <div style="padding: 1.75rem; border-bottom: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                                <div>
+                                    <span style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 700;">
+                                        REF: {{ app['application_ref'] }} • Applied on {{ app['application_date'] }}
+                                    </span>
+                                    <h4 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-navy); margin-top: 0.2rem;">
+                                        {{ app['job_title'] }}
+                                    </h4>
+                                    <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                                        {{ app['bank_name'] }} ({{ app['bank_type'] }} Sector) • {{ app['location'] }}
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span class="status-pill {{ app['application_status'] }}">
+                                        {{ app['application_status'] }}
+                                    </span>
+                                    <a href="{{ url_for('application_confirmation', app_ref=app['application_ref']) }}" class="btn btn-outline btn-sm" title="View & print submission acknowledgement">
+                                        📄 Receipt
+                                    </a>
+                                    {% if app['application_status'] in ['Submitted', 'Under Review'] %}
+                                        <form action="{{ url_for('withdraw_app', app_id=app['application_id']) }}" method="POST" onsubmit="return confirm('Are you sure you wish to withdraw this application? This action cannot be undone.');" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-outline" style="color: #ef4444; border-color: #fecaca;">
+                                                Withdraw
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Interactive Multi-Step Timeline Tracker -->
+                            <div class="timeline-tracker">
+                                {% set status_order = ['Submitted', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected'] %}
+                                {% set current_status = app['application_status'] %}
+                                
+                                <div class="timeline-step {% if current_status in ['Submitted', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected'] %}completed{% endif %}">
+                                    <div class="step-node">1</div>
+                                    <span class="step-label">Submitted</span>
+                                </div>
+
+                                <div class="timeline-step {% if current_status in ['Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected'] %}completed{% elif current_status == 'Submitted' %}current{% endif %}">
+                                    <div class="step-node">2</div>
+                                    <span class="step-label">Under Review</span>
+                                </div>
+
+                                <div class="timeline-step {% if current_status in ['Shortlisted', 'Interview Scheduled', 'Selected'] %}completed{% elif current_status == 'Under Review' %}current{% endif %}">
+                                    <div class="step-node">3</div>
+                                    <span class="step-label">Shortlisted</span>
+                                </div>
+
+                                <div class="timeline-step {% if current_status in ['Interview Scheduled', 'Selected'] %}completed{% elif current_status == 'Shortlisted' %}current{% endif %}">
+                                    <div class="step-node">4</div>
+                                    <span class="step-label">Interview</span>
+                                </div>
+
+                                <div class="timeline-step {% if current_status == 'Selected' %}completed current{% elif current_status == 'Rejected' %}rejected{% endif %}">
+                                    <div class="step-node">{% if current_status == 'Rejected' %}✕{% else %}5{% endif %}</div>
+                                    <span class="step-label">{% if current_status == 'Rejected' %}Rejected{% else %}Selected{% endif %}</span>
+                                </div>
+                            </div>
+
+                            <!-- Official Interview Call Box (Displayed ONLY when scheduled by recruitment admin) -->
+                            {% if app['interview_date'] and app['application_status'] in ['Interview Scheduled', 'Selected'] %}
+                            <div class="interview-call-box">
+                                <h4>
+                                    <span>📢</span> Official Interview Call Letter Details
+                                </h4>
+                                <div class="interview-details-grid">
+                                    <div>
+                                        <strong>Date of Interview</strong>
+                                        <p>{{ app['interview_date'] }}</p>
+                                    </div>
+                                    <div>
+                                        <strong>Interview Time</strong>
+                                        <p>{{ app['interview_time'] or 'As per board schedule' }}</p>
+                                    </div>
+                                    <div>
+                                        <strong>Mode</strong>
+                                        <p>{{ app['interview_mode'] or 'In-Person' }}</p>
+                                    </div>
+                                    <div>
+                                        <strong>Venue / Virtual Link</strong>
+                                        <p>{{ app['interview_venue_or_link'] or 'Official Bank Recruitment Room' }}</p>
+                                    </div>
+                                </div>
+                                {% if app['interview_instructions'] %}
+                                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed #a7f3d0; font-size: 0.85rem; color: #065f46;">
+                                    <strong>Candidate Instructions:</strong> {{ app['interview_instructions'] }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="text-align: center; padding: 4rem 1.5rem;">
+                            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" style="margin-bottom: 1rem;">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            </svg>
+                            <h4 style="color: var(--primary-navy); margin-bottom: 0.5rem;">No job applications submitted yet</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Explore our curated directory of government and private banking positions.</p>
+                            <a href="{{ url_for('job_listings') }}" class="btn btn-primary">Find Banking Jobs Now</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- TAB 2: SAVED JOBS -->
+            <div id="savedJobsTab" class="tab-pane" style="display: none;">
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <h3>Bookmarked / Saved Vacancies</h3>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">{{ saved_jobs|length }} Saved</span>
+                    </div>
+
+                    {% if saved_jobs %}
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Designation</th>
+                                    <th>Institution</th>
+                                    <th>Location</th>
+                                    <th>Salary</th>
+                                    <th>Deadline</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sj in saved_jobs %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('job_detail', job_id=sj['job_id']) }}" style="font-weight: 700; color: var(--primary-navy);">
+                                            {{ sj['job_title'] }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="bank-type-badge {{ 'govt' if sj['bank_type'] == 'Government' else 'private' }}" style="font-size: 0.7rem;">
+                                            {{ sj['bank_type'] }}
+                                        </span>
+                                        {{ sj['bank_name'] }}
+                                    </td>
+                                    <td>{{ sj['location'] }}</td>
+                                    <td>{{ sj['salary_range'] }}</td>
+                                    <td><strong style="color: #ef4444;">{{ sj['application_deadline'] }}</strong></td>
+                                    <td>
+                                        <a href="{{ url_for('apply_job', job_id=sj['job_id']) }}" class="btn btn-primary btn-sm">Apply</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <div style="text-align: center; padding: 3rem 1.5rem;">
+                            <p style="color: var(--text-muted);">No saved vacancies. Click the bookmark icon on any job card to save it here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- TAB 3: EDIT PROFILE -->
+            <div id="editProfileTab" class="tab-pane" style="display: none;">
+                <div class="table-card" style="padding: 2rem;">
+                    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1.5rem;">
+                        Update Candidate Profile Particulars
+                    </h3>
+                    <form action="{{ url_for('update_profile') }}" method="POST">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Full Legal Name <span class="req">*</span></label>
+                                <input type="text" name="full_name" class="form-control" value="{{ user['full_name'] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mobile Number <span class="req">*</span></label>
+                                <input type="tel" name="mobile" class="form-control" value="{{ user['mobile'] }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Highest Qualification <span class="req">*</span></label>
+                                <input type="text" name="qualification" class="form-control" value="{{ user['qualification'] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Graduation Year <span class="req">*</span></label>
+                                <input type="number" name="graduation_year" class="form-control" value="{{ user['graduation_year'] }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" name="date_of_birth" class="form-control" value="{{ user['date_of_birth'] or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Key Technical / Domain Skills</label>
+                                <input type="text" name="skills" class="form-control" value="{{ user['skills'] or '' }}" placeholder="Finacle, Credit, Risk, Excel">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Postal / Residential Address</label>
+                            <textarea name="address" class="form-control" rows="2">{{ user['address'] or '' }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Save Changes &rarr;
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchDashTab(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.dash-nav-btn').forEach(b => b.classList.remove('active'));
+    
+    const target = document.getElementById(tabId);
+    if (target) target.style.display = 'block';
+    if (btn) btn.classList.add('active');
+}
+</script>
+{% endblock %}

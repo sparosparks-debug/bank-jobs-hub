@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Review - {{ app['application_ref'] }} | Admin Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    
+    <div style="margin-bottom: 2rem;">
+        <a href="{{ url_for('admin_applications') }}" style="color: var(--text-muted); font-size: 0.88rem;">&larr; Back to all candidate applications</a>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+            <div>
+                <span class="status-pill {{ app['application_status'] }}" style="margin-bottom: 0.5rem;">
+                    Status: {{ app['application_status'] }}
+                </span>
+                <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary-navy);">
+                    {{ app['candidate_name'] }}
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    Application Reference: <strong style="font-family: monospace; color: var(--primary-navy);">{{ app['application_ref'] }}</strong>
+                    • Submitted on {{ app['application_date'] }}
+                </p>
+            </div>
+            <div>
+                <a href="/{{ app['resume_path'] }}" target="_blank" class="btn btn-gold btn-lg" style="gap: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Download Candidate Resume (PDF)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 2rem; align-items: start;">
+        
+        <!-- Left Column: Detailed Candidate Credentials -->
+        <div>
+            
+            <!-- Applied Position Summary -->
+            <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 1.75rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    Applied Vacancy Information
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Designation</span>
+                        <strong>{{ app['job_title'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Banking Institution</span>
+                        <strong>{{ app['bank_name'] }} ({{ app['bank_type'] }})</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Cadre</span>
+                        <strong>{{ app['category'] }} Cadre</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Location</span>
+                        <strong>{{ app['location'] }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate Profile & Academic Dossier -->
+            <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 1.75rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    Candidate Academic & Experience Particulars
+                </h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; font-size: 0.92rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Email</span>
+                        <a href="mailto:{{ app['candidate_email'] }}" style="color: var(--primary-navy); font-weight: 600;">{{ app['candidate_email'] }}</a>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Phone</span>
+                        <a href="tel:{{ app['candidate_mobile'] }}" style="color: var(--primary-navy); font-weight: 600;">{{ app['candidate_mobile'] }}</a>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Highest Qualification</span>
+                        <strong>{{ app['qualification'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Specialization</span>
+                        <strong>{{ app['degree_specialization'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Graduation Year</span>
+                        <strong>{{ app['graduation_year'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Aggregate Marks / CGPA</span>
+                        <strong>{{ app['percentage_cgpa'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Banking Experience</span>
+                        <strong>{{ app['experience_years'] }}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block;">Date of Birth</span>
+                        <strong>{{ app['date_of_birth'] or 'Not Specified' }}</strong>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 0.25rem;">Address</span>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); background: #f8fafc; padding: 0.75rem; border-radius: 6px;">
+                        {{ app['address'] or 'Address not provided by candidate' }}
+                    </p>
+                </div>
+
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 0.25rem;">Technical & Domain Skills</span>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); background: #f8fafc; padding: 0.75rem; border-radius: 6px;">
+                        {{ app['skills'] or 'Skills not entered' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Resume Viewer Preview Box -->
+            <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 1.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy);">
+                        Uploaded Resume Document
+                    </h3>
+                    <a href="/{{ app['resume_path'] }}" target="_blank" class="btn btn-outline btn-sm">
+                        Open in New Tab ↗
+                    </a>
+                </div>
+                <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; height: 500px; background: #525659;">
+                    <iframe src="/{{ app['resume_path'] }}" width="100%" height="100%" style="border: none;"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Administrative Decision & Interview Scheduler -->
+        <div>
+            <div style="background: #ffffff; border-radius: var(--radius-lg); border: 2px solid var(--accent-gold); box-shadow: var(--shadow-md); padding: 2rem; position: sticky; top: 90px;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;">
+                    Recruitment Board Action
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Update candidate review stage or schedule interview appointment details.
+                </p>
+
+                <form action="{{ url_for('admin_update_app_status', app_id=app['application_id']) }}" method="POST">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="application_status">Recruitment Decision / Status <span class="req">*</span></label>
+                        <select id="application_status" name="application_status" class="form-control" style="font-weight: 700; color: var(--primary-navy);" required>
+                            <option value="Submitted" {% if app['application_status'] == 'Submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="Under Review" {% if app['application_status'] == 'Under Review' %}selected{% endif %}>Under Review</option>
+                            <option value="Shortlisted" {% if app['application_status'] == 'Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                            <option value="Interview Scheduled" {% if app['application_status'] == 'Interview Scheduled' %}selected{% endif %}>Interview Scheduled</option>
+                            <option value="Selected" {% if app['application_status'] == 'Selected' %}selected{% endif %}>Selected for Appointment</option>
+                            <option value="Rejected" {% if app['application_status'] == 'Rejected' %}selected{% endif %}>Rejected / Unsuccessful</option>
+                        </select>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 1.25rem;">
+                        <h4 style="font-size: 1rem; color: var(--primary-navy); margin-bottom: 0.75rem;">
+                            📅 Interview Details (If Scheduling)
+                        </h4>
+
+                        <div class="form-group">
+                            <label class="form-label">Interview Date</label>
+                            <input type="date" name="interview_date" class="form-control" value="{{ app['interview_date'] or '' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Interview Time / Slot</label>
+                            <input type="text" name="interview_time" class="form-control" value="{{ app['interview_time'] or '' }}" placeholder="e.g. 10:30 AM IST">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Interview Mode</label>
+                            <select name="interview_mode" class="form-control">
+                                <option value="In-Person" {% if app['interview_mode'] == 'In-Person' %}selected{% endif %}>In-Person (Bank Head Office)</option>
+                                <option value="Online / Virtual" {% if app['interview_mode'] == 'Online / Virtual' %}selected{% endif %}>Online / Video Conference</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Venue Address or Virtual Meeting Link</label>
+                            <textarea name="interview_venue_or_link" class="form-control" rows="2" placeholder="e.g. Committee Room 4, Zonal Office, Mumbai or Google Meet link">{{ app['interview_venue_or_link'] or '' }}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Candidate Instructions</label>
+                            <textarea name="interview_instructions" class="form-control" rows="2" placeholder="e.g. Bring original certificates, identity proof...">{{ app['interview_instructions'] or '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.25rem;">
+                        <label class="form-label">Administrative Internal Notes (Confidential)</label>
+                        <textarea name="admin_notes" class="form-control" rows="2" placeholder="Panel remarks, score details...">{{ app['admin_notes'] or '' }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1.25rem;">
+                        Save Status & Notify Candidate &rarr;
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

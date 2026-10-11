@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Recruitment Analytics & Reports | Admin Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <a href="{{ url_for('admin_dashboard') }}" style="color: var(--text-muted); font-size: 0.88rem;">&larr; Admin Dashboard</a>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary-navy); margin-top: 0.25rem;">
+                Banking Recruitment Analytics & Reports
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.92rem;">
+                Executive recruitment metrics, conversion pipeline, and institutional data exports.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button onclick="window.print()" class="btn btn-outline" style="gap: 0.5rem;">
+                🖨️ Print Report
+            </button>
+            <a href="{{ url_for('admin_export_csv') }}" class="btn btn-gold" style="gap: 0.5rem;">
+                📥 Download CSV Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Metrics Cards -->
+    <div class="stat-cards-grid">
+        <div class="stat-card">
+            <div class="stat-icon primary">📊</div>
+            <div class="stat-info">
+                <h3>{{ stats.total_applications }}</h3>
+                <span>Total Applications</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon warning">⏳</div>
+            <div class="stat-info">
+                <h3>{{ stats.under_review_count }}</h3>
+                <span>Under Review</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">🎯</div>
+            <div class="stat-info">
+                <h3>{{ stats.shortlisted_count }}</h3>
+                <span>Shortlisted</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon cyan">📅</div>
+            <div class="stat-info">
+                <h3>{{ stats.interview_count }}</h3>
+                <span>Interviews Scheduled</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon success">🏆</div>
+            <div class="stat-info">
+                <h3>{{ stats.selected_count }}</h3>
+                <span>Final Selections</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sector & Cadre Analytics Breakdown -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                Banking Sector Vacancy Distribution
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.35rem;">
+                        <strong>Public Sector / Government Banks</strong>
+                        <span>{{ stats.govt_jobs }} Vacancies ({{ "%.1f"|format((stats.govt_jobs / (stats.total_jobs or 1)) * 100) }}%)</span>
+                    </div>
+                    <div style="height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                        <div style="height: 100%; width: {{ (stats.govt_jobs / (stats.total_jobs or 1)) * 100 }}%; background: var(--govt-green);"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.35rem;">
+                        <strong>Private Commercial Banks</strong>
+                        <span>{{ stats.private_jobs }} Vacancies ({{ "%.1f"|format((stats.private_jobs / (stats.total_jobs or 1)) * 100) }}%)</span>
+                    </div>
+                    <div style="height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                        <div style="height: 100%; width: {{ (stats.private_jobs / (stats.total_jobs or 1)) * 100 }}%; background: var(--private-blue);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                Recruitment Funnel Conversion
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span>Applications Submitted:</span>
+                    <strong>{{ stats.total_applications }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span>Shortlisted for Interview:</span>
+                    <strong>{{ stats.shortlisted_count + stats.interview_count }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span>Interviews Scheduled:</span>
+                    <strong>{{ stats.interview_count }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.4rem 0;">
+                    <span>Final Offer Selected:</span>
+                    <strong style="color: var(--govt-green);">{{ stats.selected_count }}</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Complete Applications Audit Table -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3>Complete Candidate Applications Register ({{ applications|length }})</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Candidate</th>
+                        <th>Institution & Role</th>
+                        <th>Qualification</th>
+                        <th>Status</th>
+                        <th>Interview Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in applications %}
+                    <tr>
+                        <td><strong style="font-family: monospace;">{{ a['application_ref'] }}</strong></td>
+                        <td>{{ a['candidate_name'] }} ({{ a['candidate_email'] }})</td>
+                        <td>{{ a['bank_name'] }} - {{ a['job_title'] }}</td>
+                        <td>{{ a['qualification'] }} ({{ a['experience_years'] }})</td>
+                        <td><span class="status-pill {{ a['application_status'] }}">{{ a['application_status'] }}</span></td>
+                        <td>{{ a['interview_date'] or 'Not Scheduled' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No applications recorded.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

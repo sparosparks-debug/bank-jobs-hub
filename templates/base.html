@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bank Jobs Hub | National Banking Recruitment Portal{% endblock %}</title>
+    <!-- Google Fonts: Plus Jakarta Sans for modern professional typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Top Recruitment Announcements Bar -->
+    <div class="top-notice-bar">
+        <div style="display: flex; align-items: center;">
+            <span class="notice-badge">Official Notice</span>
+            <span>All demonstration vacancies are clearly labeled. Government recruitment notifications reference official commission links.</span>
+        </div>
+        <div class="notice-links">
+            <a href="{{ url_for('contact') }}">Help Desk</a>
+            <a href="{{ url_for('about') }}">Recruitment Guidelines</a>
+            {% if current_admin %}
+                <a href="{{ url_for('admin_dashboard') }}" style="color: var(--accent-gold); font-weight: 700;">★ Admin Portal</a>
+            {% else %}
+                <a href="{{ url_for('admin_login') }}">Admin Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <div class="emblem-icon">🏛️</div>
+                <div class="brand-text">
+                    <h1>BANK JOBS HUB</h1>
+                    <span>National Recruitment Portal</span>
+                </div>
+            </a>
+
+            <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('register_all_banks') }}" style="color: var(--accent-gold); font-weight: 700;">★ Apply to All Banks</a></li>
+                <li class="nav-item"><a href="{{ url_for('job_listings', bank_type='Government') }}">Govt Banks</a></li>
+                <li class="nav-item"><a href="{{ url_for('job_listings', bank_type='Private') }}">Private Banks</a></li>
+                <li class="nav-item"><a href="{{ url_for('job_listings') }}">All Vacancies</a></li>
+                <li class="nav-item"><a href="{{ url_for('about') }}">About Portal</a></li>
+                <li class="nav-item"><a href="{{ url_for('contact') }}">Contact Desk</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="{{ url_for('register_all_banks') }}" class="btn btn-sm btn-gold" style="font-weight: 700;">
+                    Register All Banks
+                </a>
+                {% if current_user %}
+                    <a href="{{ url_for('candidate_dashboard') }}" class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Dashboard ({{ current_user['full_name'].split()[0] }})
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-gold">Logout</a>
+                {% elif current_admin %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-gold btn-sm">Admin Control</a>
+                    <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-outline">Exit Admin</a>
+                {% else %}
+                    <a href="{{ url_for('candidate_login') }}" class="btn btn-outline">Candidate Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline">Register Free</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Notifications -->
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-alert {{ category }}">
+                        <span>{{ message }}</span>
+                        <button type="button" class="close-flash">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Dynamic Content -->
+    <main style="flex: 1;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <div class="emblem-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">🏛️</div>
+                    <h3 style="margin-bottom: 0;">Bank Jobs Hub</h3>
+                </div>
+                <p>The centralized career advisory and application gateway for managerial, clerical, and specialist roles across India's top public sector and private commercial banking institutions.</p>
+                <div style="font-size: 0.82rem; color: #cbd5e1;">
+                    <strong style="color: var(--accent-gold);">Demo Notice:</strong> Sample recruitment vacancies are clearly labeled for instructional demonstration and testing purposes.
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Banking Roles</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('job_listings', category='Management') }}">Management Positions</a></li>
+                    <li><a href="{{ url_for('job_listings', category='Clerical') }}">Clerical & Teller Cadre</a></li>
+                    <li><a href="{{ url_for('job_listings', category='Specialist') }}">Specialist Officers (SO)</a></li>
+                    <li><a href="{{ url_for('job_listings', bank_type='Government') }}">Public Sector Banks</a></li>
+                    <li><a href="{{ url_for('job_listings', bank_type='Private') }}">Private Commercial Banks</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('index') }}">Home Page</a></li>
+                    <li><a href="{{ url_for('register_all_banks') }}">Apply to All Banks</a></li>
+                    <li><a href="{{ url_for('job_listings') }}">Explore All Jobs</a></li>
+                    <li><a href="{{ url_for('register') }}">Candidate Registration</a></li>
+                    <li><a href="{{ url_for('candidate_login') }}">Applicant Login</a></li>
+                    <li><a href="{{ url_for('admin_login') }}">Recruitment Admin Portal</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support & Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('contact') }}">Contact Candidate Desk</a></li>
+                    <li><a href="{{ url_for('about') }}">About Recruitment Framework</a></li>
+                    <li><a href="{{ url_for('privacy') }}">Privacy Policy & Data Security</a></li>
+                    <li><span style="color: #cbd5e1; font-size: 0.85rem;">Toll-Free Support: 1800-202-BANK</span></li>
+                    <li><span style="color: #cbd5e1; font-size: 0.85rem;">Mon - Sat: 9:30 AM to 6:00 PM</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; {{ now_year }} Bank Jobs Hub Recruitment & Management System. All rights reserved. Designed for government and private banking career aspirants.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

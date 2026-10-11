@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Banking Job Vacancies & Search Portal | Govt & Private Bank Jobs{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--primary-navy) 100%); color: #ffffff; padding: 3rem 1.5rem 3.5rem; border-bottom: 2px solid var(--accent-gold);">
+    <div class="container">
+        <span class="section-tag" style="color: var(--accent-gold);">Recruitment Directory 2026</span>
+        <h1 style="font-size: 2.4rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em;">
+            Banking Vacancies & Opportunities
+        </h1>
+        <p style="color: #cbd5e1; font-size: 1.05rem; max-width: 750px;">
+            Filter and explore current openings across public sector and private commercial banking institutions. All sample simulation vacancies are clearly tagged.
+        </p>
+    </div>
+</div>
+
+<div class="container" style="margin-top: -1.5rem; margin-bottom: 4rem;">
+    <!-- Filter Card -->
+    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); padding: 1.75rem; margin-bottom: 2rem;">
+        <form id="jobFiltersForm" method="GET" action="{{ url_for('job_listings') }}">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                
+                <!-- Keyword -->
+                <div>
+                    <label class="form-label">Search Keyword</label>
+                    <div class="search-field" style="background: #fff; padding: 0.6rem 0.8rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" name="keyword" value="{{ filters.keyword }}" placeholder="Role, bank or skills..." autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Bank Type -->
+                <div>
+                    <label class="form-label">Bank Sector</label>
+                    <select name="bank_type" class="form-control">
+                        <option value="All" {% if filters.bank_type == 'All' %}selected{% endif %}>All Banking Sectors</option>
+                        <option value="Government" {% if filters.bank_type == 'Government' %}selected{% endif %}>Government Banks (PSB)</option>
+                        <option value="Private" {% if filters.bank_type == 'Private' %}selected{% endif %}>Private Commercial Banks</option>
+                    </select>
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label class="form-label">Role Category</label>
+                    <select name="category" class="form-control">
+                        <option value="All" {% if filters.category == 'All' %}selected{% endif %}>All Job Roles</option>
+                        <option value="Management" {% if filters.category == 'Management' %}selected{% endif %}>Management Positions</option>
+                        <option value="Clerical" {% if filters.category == 'Clerical' %}selected{% endif %}>Clerical & Teller Cadre</option>
+                        <option value="Specialist" {% if filters.category == 'Specialist' %}selected{% endif %}>Specialist Officers (SO)</option>
+                    </select>
+                </div>
+
+                <!-- Experience Level -->
+                <div>
+                    <label class="form-label">Experience Level</label>
+                    <select name="experience_level" class="form-control">
+                        <option value="All" {% if filters.experience_level == 'All' %}selected{% endif %}>All Experience Levels</option>
+                        <option value="Fresher" {% if filters.experience_level == 'Fresher' %}selected{% endif %}>Fresher / Entry Level</option>
+                        <option value="1-3 Years" {% if filters.experience_level == '1-3 Years' %}selected{% endif %}>1 - 3 Years</option>
+                        <option value="3-5 Years" {% if filters.experience_level == '3-5 Years' %}selected{% endif %}>3 - 5 Years</option>
+                        <option value="5+ Years" {% if filters.experience_level == '5+ Years' %}selected{% endif %}>5+ Years (Senior)</option>
+                    </select>
+                </div>
+
+                <!-- Qualification -->
+                <div>
+                    <label class="form-label">Qualification</label>
+                    <select name="qualification" class="form-control">
+                        <option value="All" {% if filters.qualification == 'All' %}selected{% endif %}>Any Qualification</option>
+                        <option value="Graduate" {% if filters.qualification == 'Graduate' %}selected{% endif %}>Graduate in any discipline</option>
+                        <option value="MBA" {% if filters.qualification == 'MBA' %}selected{% endif %}>MBA / Post Graduate</option>
+                        <option value="CA" {% if filters.qualification == 'CA' %}selected{% endif %}>CA / CFA / Finance</option>
+                        <option value="B.Tech" {% if filters.qualification == 'B.Tech' %}selected{% endif %}>B.Tech / MCA (IT)</option>
+                    </select>
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label class="form-label">Location / City</label>
+                    <select name="location" class="form-control">
+                        <option value="All" {% if filters.location == 'All' %}selected{% endif %}>All Locations</option>
+                        <option value="Mumbai" {% if filters.location == 'Mumbai' %}selected{% endif %}>Mumbai, Maharashtra</option>
+                        <option value="New Delhi" {% if filters.location == 'New Delhi' %}selected{% endif %}>New Delhi, NCR</option>
+                        <option value="Bengaluru" {% if filters.location == 'Bengaluru' %}selected{% endif %}>Bengaluru, Karnataka</option>
+                        <option value="Hyderabad" {% if filters.location == 'Hyderabad' %}selected{% endif %}>Hyderabad, Telangana</option>
+                        <option value="Chennai" {% if filters.location == 'Chennai' %}selected{% endif %}>Chennai, Tamil Nadu</option>
+                        <option value="Kolkata" {% if filters.location == 'Kolkata' %}selected{% endif %}>Kolkata, West Bengal</option>
+                        <option value="Pune" {% if filters.location == 'Pune' %}selected{% endif %}>Pune, Maharashtra</option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Apply Filter</button>
+                    <button type="button" id="resetFiltersBtn" class="btn btn-outline" title="Reset all filters">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Status Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 id="resultsCount" style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy);">
+            {{ total_results }} Vacanc{{ 'y' if total_results == 1 else 'ies' }} Found
+        </h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+            Displaying live recruitment postings
+        </span>
+    </div>
+
+    <!-- Jobs Grid Container (connected to live AJAX filter script) -->
+    <div id="jobsGridContainer" class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <div>
+                <div class="job-card-header">
+                    <div class="bank-meta">
+                        <div class="bank-avatar">{{ job['bank_name'][0] }}</div>
+                        <div class="bank-info">
+                            <h4>{{ job['bank_name'] }}</h4>
+                            <span class="bank-type-badge {{ 'govt' if job['bank_type'] == 'Government' else 'private' }}">
+                                {{ job['bank_type'] }} Bank
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                        {% if job['is_sample_data'] %}
+                            <span class="sample-badge">Sample Listing</span>
+                        {% endif %}
+                        <button class="btn-bookmark" data-job-id="{{ job['job_id'] }}" title="Save to favorites">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('job_detail', job_id=job['job_id']) }}" class="job-title-link">{{ job['job_title'] }}</a>
+                <p class="job-snippet">{{ job['job_description'] }}</p>
+
+                <div class="job-specs-list">
+                    <span class="job-spec-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        {{ job['location'] }}
+                    </span>
+                    <span class="job-spec-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        {{ job['salary_range'] }}
+                    </span>
+                    <span class="job-spec-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        {{ job['experience_level'] }}
+                    </span>
+                    <span class="job-spec-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        {{ job['category'] }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="job-card-footer">
+                <div class="deadline-info">
+                    Deadline: <strong>{{ job['application_deadline'] }}</strong>
+                </div>
+                <div class="card-actions">
+                    {% if job['bank_type'] == 'Government' and job['official_notification_url'] %}
+                        <a href="{{ job['official_notification_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="View official government recruitment notice">
+                            Notification
+                        </a>
+                    {% elif job['bank_type'] == 'Private' and job['employer_apply_url'] %}
+                        <a href="{{ job['employer_apply_url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="View employer website">
+                            Bank Site
+                        </a>
+                    {% endif %}
+                    <a href="{{ url_for('apply_job', job_id=job['job_id']) }}" class="btn btn-primary btn-sm">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1;">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" style="margin-bottom: 1rem;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <h3 style="color: #0f172a; margin-bottom: 0.5rem; font-weight: 700;">No vacancies matching your criteria</h3>
+            <p style="color: #64748b; max-width: 450px; margin: 0 auto 1.5rem;">Try modifying your search criteria or resetting filters.</p>
+            <a href="{{ url_for('job_listings') }}" class="btn btn-outline">Clear All Filters</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/jobs.js') }}"></script>
+{% endblock %}

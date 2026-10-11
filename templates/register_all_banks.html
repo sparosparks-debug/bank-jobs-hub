@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Universal Banking Registration | Apply to All Banks{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--primary-navy) 100%); color: #ffffff; padding: 3rem 1.5rem 3.5rem; border-bottom: 2px solid var(--accent-gold);">
+    <div class="container" style="max-width: 950px;">
+        <span class="section-tag" style="color: var(--accent-gold);">Universal Candidate Gateway 2026</span>
+        <h1 style="font-size: 2.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+            Centralized Banking Registration & Common Application
+        </h1>
+        <p style="color: #cbd5e1; font-size: 1.05rem;">
+            Register once and apply seamlessly across participating Government and Private Commercial Banks in a single submission.
+        </p>
+    </div>
+</div>
+
+<div class="container" style="max-width: 950px; margin-top: -1.5rem; margin-bottom: 4rem;">
+    <div class="form-card" style="max-width: 100%;">
+        
+        <form id="universalRegistrationForm" action="{{ url_for('register_all_banks') }}" method="POST" enctype="multipart/form-data">
+
+            <!-- Step 1: Bank Institutions Selection -->
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.75rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.2rem;">
+                            1. Select Participating Banking Institutions <span class="req">*</span>
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                            Select specific banks or click "Select All Banks" to register across all institutions.
+                        </p>
+                    </div>
+                    <div>
+                        <button type="button" id="toggleAllBanksBtn" class="btn btn-outline btn-sm" style="background: #ffffff; font-weight: 700; border-color: var(--accent-gold); color: var(--primary-navy);">
+                            ✓ Select All Banks
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem;">
+                    {% for bank in banks_list %}
+                    <label style="display: flex; align-items: center; gap: 0.65rem; background: #ffffff; border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; transition: var(--transition);">
+                        <input type="checkbox" name="banks" value="{{ bank['bank_name'] }}" class="bank-checkbox" checked style="width: 17px; height: 17px;">
+                        <div>
+                            <span style="font-weight: 700; font-size: 0.9rem; color: var(--primary-navy); display: block;">{{ bank['bank_name'] }}</span>
+                            <span class="bank-type-badge {{ 'govt' if bank['bank_type'] == 'Government' else 'private' }}" style="font-size: 0.65rem; padding: 0.1rem 0.45rem;">
+                                {{ bank['bank_type'] }}
+                            </span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Step 2: Target Cadres -->
+            <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 0.5rem;">
+                    2. Select Target Job Cadres
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Choose the roles you wish to be evaluated for across your selected banks:
+                </p>
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="categories" value="Management" checked style="width: 17px; height: 17px;">
+                        <span style="font-weight: 600; font-size: 0.92rem;">Management Positions (Branch / Operations / Relationship)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="categories" value="Clerical" checked style="width: 17px; height: 17px;">
+                        <span style="font-weight: 600; font-size: 0.92rem;">Clerical & Associate Positions (Customer Service / Teller)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="categories" value="Specialist" checked style="width: 17px; height: 17px;">
+                        <span style="font-weight: 600; font-size: 0.92rem;">Specialist Officer Roles (IT, Credit, Risk, Treasury)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 3: Candidate Particulars -->
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                3. Candidate Credentials & Contact Details
+            </h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="candidate_name">Full Legal Name <span class="req">*</span></label>
+                    <input type="text" id="candidate_name" name="candidate_name" class="form-control" value="{{ current_user_obj['full_name'] if current_user_obj else '' }}" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="candidate_email">Email Address <span class="req">*</span></label>
+                    <input type="email" id="candidate_email" name="candidate_email" class="form-control" value="{{ current_user_obj['email'] if current_user_obj else '' }}" placeholder="name@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="candidate_mobile">Mobile Number (10 Digits) <span class="req">*</span></label>
+                    <input type="tel" id="candidate_mobile" name="candidate_mobile" class="form-control" value="{{ current_user_obj['mobile'] if current_user_obj else '' }}" placeholder="9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="date_of_birth">Date of Birth</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" value="{{ current_user_obj['date_of_birth'] if current_user_obj else '' }}">
+                </div>
+            </div>
+
+            {% if not current_user_obj %}
+            <div class="form-group" style="background: #f1f5f9; padding: 1rem; border-radius: 8px;">
+                <label class="form-label" for="password">Create Account Password (To log in later) <span class="req">*</span></label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Create a secure password" minlength="6" required>
+                <span class="form-helper">An applicant portal account will be automatically configured for you.</span>
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="qualification">Highest Academic Qualification <span class="req">*</span></label>
+                    <select id="qualification" name="qualification" class="form-control" required>
+                        <option value="Graduate (B.Com / B.Sc / B.A / BBA)">Graduate in any discipline (B.Com / B.Sc / B.A / BBA)</option>
+                        <option value="B.Tech / B.E. / MCA (Engineering / IT)">B.Tech / B.E. / MCA (Engineering / IT)</option>
+                        <option value="MBA / Post Graduate in Management (Finance / Marketing)">MBA / Post Graduate (Finance / Marketing)</option>
+                        <option value="Chartered Accountant (CA) / CFA / ICWA">Chartered Accountant (CA) / CFA / ICWA</option>
+                        <option value="Post Graduate in Economics / Statistics">Post Graduate in Economics / Statistics</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="graduation_year">Graduation Year <span class="req">*</span></label>
+                    <input type="number" id="graduation_year" name="graduation_year" class="form-control" value="{{ current_user_obj['graduation_year'] if current_user_obj else '2024' }}" min="1980" max="2030" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="percentage_cgpa">Aggregate Marks (Percentage or CGPA) <span class="req">*</span></label>
+                    <input type="text" id="percentage_cgpa" name="percentage_cgpa" class="form-control" placeholder="e.g. 78.5% or 8.4 CGPA" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="experience_level">Banking / Corporate Experience</label>
+                    <select id="experience_level" name="experience_level" class="form-control">
+                        <option value="Fresher / Entry Level">Fresher / Entry Level</option>
+                        <option value="1 - 3 Years">1 - 3 Years</option>
+                        <option value="3 - 5 Years">3 - 5 Years</option>
+                        <option value="5+ Years Senior">5+ Years Senior</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="address">Residential / Correspondence Address</label>
+                <textarea id="address" name="address" class="form-control" rows="2" placeholder="Street address, city, state, postal PIN code">{{ current_user_obj['address'] if current_user_obj else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="skills">Technical & Banking Domain Skills</label>
+                <input type="text" id="skills" name="skills" class="form-control" value="{{ current_user_obj['skills'] if current_user_obj else '' }}" placeholder="e.g. Finacle, Credit Appraisal, AML, Risk Analysis, Excel">
+            </div>
+
+            <!-- Resume Upload (PDF) -->
+            <div class="form-group" style="background: #eff6ff; border: 2px dashed #93c5fd; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                <label class="form-label" for="resume" style="font-size: 1rem; color: #1e3a8a;">
+                    📄 Upload Candidate Resume / Curriculum Vitae (PDF)
+                </label>
+                <p style="font-size: 0.82rem; color: #1e40af; margin-bottom: 0.5rem;">
+                    Upload PDF format resume (Max 8MB). If omitted, default system template is attached.
+                </p>
+                <input type="file" id="resume" name="resume" class="form-control" accept=".pdf">
+            </div>
+
+            <!-- Declaration -->
+            <div style="margin: 1.5rem 0; padding: 1.25rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="consent" name="consent" checked required style="margin-top: 4px; width: 17px; height: 17px;">
+                    <span style="font-size: 0.85rem; color: #92400e; line-height: 1.5;">
+                        <strong>Declaration & Consent:</strong> I hereby declare that the particulars furnished in this centralized registration are true and complete. I authorize the Govt and Private Bank Jobs Portal to forward my application dossier to all selected participating banking institutions for recruitment screening.
+                    </span>
+                </label>
+            </div>
+
+            <button type="submit" id="submitAllBanksBtn" class="btn btn-gold btn-lg" style="width: 100%; font-size: 1.15rem; padding: 1rem;">
+                Submit Registration to All Selected Banks &rarr;
+            </button>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggleAllBanksBtn');
+    const checkboxes = document.querySelectorAll('.bank-checkbox');
+    let allChecked = true;
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            allChecked = !allChecked;
+            checkboxes.forEach(cb => cb.checked = allChecked);
+            toggleBtn.textContent = allChecked ? '✓ Deselect All' : '✓ Select All Banks';
+        });
+    }
+});
+</script>
+{% endblock %}

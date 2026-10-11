@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy & Applicant Data Notice | Govt & Private Bank Jobs Portal{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--primary-navy) 100%); color: #ffffff; padding: 3rem 1.5rem 3.5rem; border-bottom: 2px solid var(--accent-gold);">
+    <div class="container">
+        <span class="section-tag" style="color: var(--accent-gold);">Applicant Privacy Compliance</span>
+        <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+            Privacy Policy & Data Protection Notice
+        </h1>
+        <p style="color: #cbd5e1; font-size: 1.05rem; max-width: 750px;">
+            How your recruitment credentials, contact information, and resume documents are safeguarded.
+        </p>
+    </div>
+</div>
+
+<div class="container" style="margin-top: -1.5rem; margin-bottom: 4rem;">
+    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); padding: 2.5rem; max-width: 900px; margin: 0 auto;">
+        
+        <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem;">
+            1. Purpose and Scope of Data Collection
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+            The Govt & Private Bank Jobs Portal collects only personal and academic information strictly necessary to evaluate your eligibility for banking roles in accordance with public sector commissions and employer guidelines. This includes your name, email, mobile number, educational credentials, aggregate scores, and curriculum vitae (PDF format).
+        </p>
+
+        <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem;">
+            2. Password Encryption & Security Standards
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+            All candidate and administrative passwords are irreversibly hashed using industry-standard cryptographic algorithms (PBKDF2 / SHA-256 / scrypt). Passwords are never stored in plain text. Session tokens are maintained via cryptographically signed HTTP cookies.
+        </p>
+
+        <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem;">
+            3. File Upload Safety & Restrictions
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+            Resume uploads are restricted strictly to validated Portable Document Format (.pdf) files with an 8MB file size limit. Uploaded files undergo secure path sanitization to eliminate path-traversal vulnerabilities.
+        </p>
+
+        <h3 style="color: var(--primary-navy); font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem;">
+            4. Access Control & Non-Disclosure
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+            Candidate submissions are accessible exclusively to authenticated recruitment officers and board administrators. We do not sell, rent, or lease candidate data to external commercial advertising agencies.
+        </p>
+
+        <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 1.25rem; border-radius: 6px; font-size: 0.9rem; color: #1e40af;">
+            For privacy inquiries or account data purge requests, contact our Compliance Officer at <code>privacy@apexbankportal.gov.in</code>.
+        </div>
+
+    </div>
+</div>
+{% endblock %}

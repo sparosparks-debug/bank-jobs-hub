@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Confirmation - {{ app['application_ref'] }} | Bank Jobs Hub{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 2rem 1.5rem;">
+    <div class="receipt-wrapper">
+        
+        <div class="receipt-header">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                    <span style="font-size: 1.5rem;">🏛️</span>
+                    <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy); margin: 0;">Bank Jobs Hub</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Official Application Submission Acknowledgement Slip</p>
+            </div>
+            <div class="receipt-ref-stamp">
+                <span>Application Reference</span>
+                <strong>{{ app['application_ref'] }}</strong>
+            </div>
+        </div>
+
+        <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 6px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+                ✓
+            </div>
+            <div>
+                <h4 style="color: #065f46; font-size: 1.05rem; margin-bottom: 0.2rem;">Application Successfully Submitted!</h4>
+                <p style="color: #047857; font-size: 0.88rem; margin: 0;">
+                    Your recruitment dossier has been officially registered with the processing desk. Please quote your reference number in all future correspondences.
+                </p>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+            Applied Position Details
+        </h3>
+        <div class="receipt-grid">
+            <div class="receipt-field">
+                <label>Recruitment Designation</label>
+                <p>{{ app['job_title'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Banking Institution</label>
+                <p>{{ app['bank_name'] }} ({{ app['bank_type'] }} Sector)</p>
+            </div>
+            <div class="receipt-field">
+                <label>Job Cadre</label>
+                <p>{{ app['category'] }} Cadre</p>
+            </div>
+            <div class="receipt-field">
+                <label>Location / Posting</label>
+                <p>{{ app['location'] }}</p>
+            </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+            Applicant Profile Summary
+        </h3>
+        <div class="receipt-grid">
+            <div class="receipt-field">
+                <label>Full Legal Name</label>
+                <p>{{ app['candidate_name'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Registered Email</label>
+                <p>{{ app['candidate_email'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Mobile Number</label>
+                <p>{{ app['candidate_mobile'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Submission Timestamp</label>
+                <p>{{ app['application_date'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Qualification & Degree</label>
+                <p>{{ app['qualification'] }} - {{ app['degree_specialization'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Marks Aggregate</label>
+                <p>{{ app['percentage_cgpa'] }} (Graduation {{ app['graduation_year'] }})</p>
+            </div>
+            <div class="receipt-field">
+                <label>Experience Claimed</label>
+                <p>{{ app['experience_years'] }}</p>
+            </div>
+            <div class="receipt-field">
+                <label>Current Status</label>
+                <p><span class="status-pill {{ app['application_status'] }}">{{ app['application_status'] }}</span></p>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+            This is a system-generated acknowledgement and does not require physical signatures. You may verify status updates in your candidate dashboard.
+        </div>
+
+        <!-- Action Buttons (Hidden on Print) -->
+        <div class="no-print" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <button onclick="window.print()" class="btn btn-outline" style="gap: 0.5rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Application Receipt
+            </button>
+            <a href="{{ url_for('candidate_dashboard') }}" class="btn btn-primary">
+                Return to Candidate Dashboard &rarr;
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
